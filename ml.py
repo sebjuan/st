@@ -5,6 +5,7 @@ import numpy as np
 from tqdm import tqdm
 import pandas as pd
 
+
 def extract_best_indices(m, topk):
     """
     Use sum of the cosine distance over all tokens.
@@ -19,17 +20,24 @@ def extract_best_indices(m, topk):
     else:
         cos_sim = m
     index = np.argsort(cos_sim)[::-1]  # from highest idx to smallest score
-    print(f"index is {index}")
 
+    scores = np.sort(cos_sim)[::-1]
     mask = np.ones(len(cos_sim))
+
     # print(f"mask is {mask}")
     # mask = np.logical_or(cos_sim[index] != 0, mask)  # eliminate 0 cosine distance
     # print(f"mask is {mask}")
     # best_index = index[mask][:topk]
+
     best_index = index[:topk]
-    return best_index
+    best_scores = scores[:topk]
+    print(f"best index is {best_index}")
+    print(f"scores are : {scores}")
+    return best_index, best_scores
+
 
 BERT_BATCH_SIZE = 40
+
 
 # MODEL_NAME = 'sentence-transformers/paraphrase-MiniLM-L6-v2'
 
@@ -113,8 +121,9 @@ class BertModel:
         input_vec = self.transform(in_sentence)
         mat = cosine_similarity(input_vec, self.embed_mat)
         # best cos sim for each token independantly
-        best_index = extract_best_indices(mat, topk=topk)
-        return best_index
+        best_index, best_score = extract_best_indices(mat, topk=topk)
+        return best_index, best_score
+
 
 MODEL_NAME = 'sentence-transformers/all-mpnet-base-v1'
 BERT_BATCH_SIZE = 4
@@ -123,6 +132,7 @@ bert_model = BertModel(model_name=MODEL_NAME, batch_size=BERT_BATCH_SIZE)
 matrice = torch.load('mon_premier_torch.pt')
 df = pd.read_csv("films.txt", header='infer')
 bert_model.embed_mat = matrice
+
 
 def get_random_plot():
     i = np.random.randint(len(df.index))
