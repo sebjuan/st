@@ -2,7 +2,7 @@ import streamlit as st
 from ml import bert_model, df, get_random_plot
 
 user_input = ''
-max_result = st.slider('max_result', 1, 100, 3)
+max_result = st.slider('max_result', 1, 100, 100)
 
 st.markdown("Go on with your imaginary plot... like : ")
 st.markdown(f"""
