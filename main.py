@@ -1,10 +1,8 @@
-
 import streamlit as st
 from ml import bert_model, df, get_random_plot
 
-
-user_input =''
-max_result = st.slider('max_result', 1, 10, 3)
+user_input = ''
+max_result = st.slider('max_result', 1, 100, 3)
 
 st.markdown("Go on with your imaginary plot... like : ")
 st.markdown(f"""
@@ -19,25 +17,19 @@ You can even just use it as a search engine, try :
 ...or pick a random synopsis of our database
 """)
 
-
 plot = None
 if st.button("I can't think of anything, give me a (another) random plot"):
     plot = get_random_plot()
 
-user_input = st.text_area("",plot if plot else '')
+user_input = st.text_area("", plot if plot else '')
 
-for i in bert_model.predict(user_input, max_result):
+best_index, best_scores = bert_model.predict(user_input, max_result)
+#st.header(best_index)
+#st.header(best_scores)
+for i, s in zip(best_index, best_scores):
     if not user_input:
         st.write()
     else:
-        st.header(df.loc[i,'TITLE'])
-        s = df.loc[i,'RAW_PLOT']
-        st.write(df.loc[i,'RAW_PLOT'])
-
-
-
-
-
-
-
-
+        st.header(df.loc[i, 'TITLE'] + ' ' + f"{s:0.4f}")
+        s = df.loc[i, 'RAW_PLOT']
+        st.write(df.loc[i, 'RAW_PLOT'])
