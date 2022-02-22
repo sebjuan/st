@@ -4,7 +4,7 @@ from ml import bert_model, df, get_random_plot
 
 
 user_input =''
-max_result = st.slider('max_result', 1, 10, 3)
+max_result = st.slider('max_result', 1, 50, 3)
 
 st.markdown("Go on with your imaginary plot... like : ")
 st.markdown(f"""
