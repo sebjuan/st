@@ -2,7 +2,7 @@ import streamlit as st
 from ml import bert_model, df, get_random_plot
 
 user_input = ''
-max_result = st.slider('max_result', 1, 100, 100)
+
 
 st.markdown("Go on with your imaginary plot... like : ")
 st.markdown(f"""
@@ -22,6 +22,7 @@ if st.button("I can't think of anything, give me a (another) random plot"):
     plot = get_random_plot()
 
 user_input = st.text_area("", plot if plot else '')
+max_result = st.slider('max_result', 1, 100, 100)
 
 best_index, best_scores = bert_model.predict(user_input, max_result)
 #st.header(best_index)
